@@ -2,28 +2,30 @@
 
 public class CastSlot : MonoBehaviour
 {
+    private SpriteRenderer reticule;
+    private SpriteRenderer Reticule
+    {
+        get {
+            reticule = reticule ?? GetComponentInChildren<SpriteRenderer>();
+            return reticule;
+        }
+    }
+
+    private bool isAiming = false;
     public bool IsAiming
     {
         get { return isAiming; }
         set {
             isAiming = value;
-            Vector4 color = reticule.color;
+            Vector4 color = Reticule.color;
             color.w = isAiming ? 1f : 0.25f;
-            reticule.color = color;
+            Reticule.color = color;
         }
-    }
-
-    private SpriteRenderer reticule;
-    private bool isAiming = false;
-
-    void Start ()
-    {
-        reticule = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update ()
     {
-        if ( IsAiming && INPUT.Inst.DirLS != Vector3.zero )
-            transform.forward = INPUT.Inst.DirLS;
+        if ( IsAiming && INPUT.I.DirLS != Vector3.zero )
+            transform.forward = INPUT.I.DirLS;
     }
 }

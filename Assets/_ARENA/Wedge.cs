@@ -14,7 +14,7 @@ public class Wedge : Zone
 
     public override void Reset ()
     {
-        ARENA.Inst.DeactivateWedge(this);
+        ARENA.I.DeactivateWedge(this);
         base.Reset();
     }
 

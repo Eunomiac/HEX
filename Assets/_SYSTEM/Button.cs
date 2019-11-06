@@ -3,43 +3,44 @@
 public class Button : MonoBehaviour
 {
     public INPUT.Button buttonName;
+    public INPUT.Button ButtonName { get { return buttonName; } }
 
-    private float lastTapTime;
-    private int tapCount = 0;
-    private bool isHolding;
-    private Vector3? dirAtTap;
-    private float pauseTimer = 0f;
+    private float LastTapTime { get; set; }
+    private int TapCount { get; set; } = 0;
+    private bool IsHolding  { get; set; }
+    private Vector3? DirAtTap { get; set; }
+    private float PauseTimer { get; set; } = 0f;
 
     void Update ()
     {
-        if ( pauseTimer > 0 )
+        if ( PauseTimer > 0 )
         {
-            pauseTimer = Mathf.Max(0f, pauseTimer - Time.deltaTime);
+            PauseTimer = Mathf.Max(0f, PauseTimer - Time.deltaTime);
             return;
         }
-        if ( Input.GetButtonDown(buttonName.ToString()) )  // This Is a **TAP**;
+        if ( Input.GetButtonDown(ButtonName.ToString()) )  // This Is a **TAP**;
         {
-            lastTapTime = Time.time;
-            tapCount++;
-            dirAtTap = INPUT.Inst.DirLS;
-            if ( tapCount == 1 )
-                PLAYER.Inst.FirstTap(this);           // If this is the FIRST tap, alert PLAYER immediately for instant graphic response.
+            LastTapTime = Time.time;
+            TapCount++;
+            DirAtTap = INPUT.I.DirLS;
+            if ( TapCount == 1 )
+                PLAYER.I.FirstTap(this);           // If this is the FIRST tap, alert PLAYER immediately for instant graphic response.
         }
-        else if ( Input.GetButton(buttonName.ToString()) && lastTapTime > 0f && Time.time - lastTapTime > PREFS.Inst.Leeway && !isHolding )
+        else if ( Input.GetButton(ButtonName.ToString()) && LastTapTime > 0f && Time.time - LastTapTime > PREFS.I.Leeway && !IsHolding )
         {
-            PLAYER.Inst.StartHold(this, tapCount, (Vector3) dirAtTap);    // ELSE IF button held for longer than leeway, this is a **HOLD**.
-            isHolding = true;
+            PLAYER.I.StartHold(this, TapCount, (Vector3) DirAtTap);    // ELSE IF button held for longer than leeway, this is a **HOLD**.
+            IsHolding = true;
             Clear();
         }
-        else if ( isHolding && Input.GetButtonUp(buttonName.ToString()) )
+        else if ( IsHolding && Input.GetButtonUp(ButtonName.ToString()) )
         {
-            PLAYER.Inst.EndHold(this);
-            isHolding = false;
+            PLAYER.I.EndHold(this);
+            IsHolding = false;
             Clear();
         }
-        else if ( tapCount > 0 && !Input.GetButton(buttonName.ToString()) && (Time.time - lastTapTime > PREFS.Inst.Leeway || tapCount >= PREFS.Inst.MaxTaps) )
+        else if ( TapCount > 0 && !Input.GetButton(ButtonName.ToString()) && (Time.time - LastTapTime > PREFS.I.Leeway || TapCount >= PREFS.I.MaxTaps) )
         {
-            PLAYER.Inst.MultiTap(this, tapCount, (Vector3) dirAtTap);
+            PLAYER.I.MultiTap(this, TapCount, (Vector3) DirAtTap);
             Clear();
         }
     }
@@ -47,14 +48,14 @@ public class Button : MonoBehaviour
     public void Clear (bool isPausing)
     {
         if ( isPausing )
-            pauseTimer = PREFS.Inst.Leeway * 2;
+            PauseTimer = PREFS.I.Leeway * 2;
         Clear();
     }
 
     public void Clear ()
     {
-        lastTapTime = 0;
-        tapCount = 0;
-        dirAtTap = null;
+        LastTapTime = 0;
+        TapCount = 0;
+        DirAtTap = null;
     }
 }

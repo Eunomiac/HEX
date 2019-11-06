@@ -3,17 +3,14 @@
 public class INPUT : MonoBehaviour
 {
     private static INPUT instance;
-    public static INPUT Inst
+    public static INPUT I
     {
-        get {
-            instance = instance ?? FindObjectOfType<INPUT>();
-            return instance;
+        get {            
+            return instance = instance ?? FindObjectOfType<INPUT>();;
         }
     }
 
     public enum Button { A, B, X, Y, LB, RB, Back, Start, LT = 9, RT };
-
-
 
     public Vector3 DirLS
     {

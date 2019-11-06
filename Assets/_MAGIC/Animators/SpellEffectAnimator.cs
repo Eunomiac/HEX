@@ -14,6 +14,6 @@ public class SpellEffectAnimator : MonoBehaviour
 
     public void AnimEvent_SpellFinished ()
     {
-        GetComponentInParent<SpellEffect>().spellFinished();
+        GetComponentInParent<SpellEffect>().FinishSpell();
     }
 }

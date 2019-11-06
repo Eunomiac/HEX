@@ -17,6 +17,6 @@ public class ThreatAnimator : MonoBehaviour
 
     public void AnimEvent_StrikePlayer ()
     {
-        GetComponentInParent<Threat>().StrikePlayer(this);
+        GetComponentInParent<THREAT>().StrikePlayer(this);
     }
 }

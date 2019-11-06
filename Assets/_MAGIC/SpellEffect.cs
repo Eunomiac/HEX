@@ -3,68 +3,63 @@
 public class SpellEffect : MonoBehaviour
 {
     public MAGIC.Element spellType;
+    public MAGIC.Element SpellType { get; }
     public GameObject spriteHolder;
+    public GameObject SpriteHolder { get; }
 
     private SpellEffectAnimator animator;
-    private Zone targetZone;
-    private bool isZoneAttacking;
-
-    void Awake ()
+    private SpellEffectAnimator Animator 
     {
-        animator = GetComponentInChildren<SpellEffectAnimator>();
+        get {
+            return animator = animator ?? GetComponentInChildren<SpellEffectAnimator>();
+        }
     }
+    private Zone TargetZone { get; set; }
+    private bool IsZoneAttacking { get; set; }
 
     void Update ()
     {
-        if ( targetZone && !isZoneAttacking && targetZone.ActiveThreat )
-            isZoneAttacking = true;
-        else if ( targetZone && isZoneAttacking && !targetZone.ActiveThreat )
+        if ( TargetZone && !IsZoneAttacking && TargetZone.ActiveThreat )
+            IsZoneAttacking = true;
+        else if ( TargetZone && IsZoneAttacking && !TargetZone.ActiveThreat )
             CancelSpell();
     }
 
-    public bool isZoneValidTarget (Zone zone, int numTaps, bool isHold)
+    public bool IsZoneValidTarget (Zone zone, int numTaps, bool isHold)
     {
-        if ( zone.ActiveThreat )
-            return zone.NumThreats == numTaps
-                && zone.Type == spellType
-                && zone.IsHold == isHold;
-        else
-            return false;
+        return zone.ActiveThreat
+            && zone.NumThreats == numTaps
+            && zone.Type == SpellType
+            && zone.IsHold == isHold;
     }
 
-    public void castAtZone (Zone zone, int numTaps, bool isHold)
+    public void CastAtZone (Zone zone, int numTaps, bool isHold)
     {
-        if ( isZoneValidTarget(zone, numTaps, isHold) )
-        {
-            targetZone = zone;
-            animator.SetCastingSpeed(numTaps);
+        if ( IsZoneValidTarget(zone, numTaps, isHold) ) {
+            TargetZone = zone;
+            Animator.SetCastingSpeed(numTaps);
             transform.rotation = zone.transform.rotation;
-            spriteHolder.transform.rotation = Quaternion.identity;
-        }
-        else
-        {
-            MAGIC.Inst.Fail(MAGIC.FailureCondition.NoTarget);
-            if ( zone.ActiveThreat )
-            {
-                Debug.Log("   ... failed at " + zone.name + ": " + numTaps + ":" + zone.NumThreats + ", " + spellType + ":" + zone.Type + ", " + isHold + ":" + zone.IsHold);
-            }
-            else
-            {
-                Debug.Log("   ... failed at " + zone.name + ": Empty Zone");
+            SpriteHolder.transform.rotation = Quaternion.identity;
+        } else {
+            MAGIC.I.Fail(MAGIC.FailureCondition.NoTarget);
+            if ( zone.ActiveThreat ) {
+                Debug.Log($"   ... failed at {zone.name}: {numTaps}:{zone.NumThreats}, {SpellType}:{zone.Type}, {isHold}:{zone.IsHold}");
+            } else {
+                Debug.Log($"   ... failed at {zone.name}: Empty Zone");
             }
             CancelSpell();
         }
     }
 
-    public void spellFinished ()
+    public void FinishSpell ()
     {
-        targetZone.Neutralize();
+        TargetZone.Neutralize();
         CancelSpell();
     }
 
     void CancelSpell ()
     {
-        PLAYER.Inst.FreeCastSlot(GetComponentInParent<CastSlot>());
+        PLAYER.I.FreeCastSlot(GetComponentInParent<CastSlot>());
         Destroy(gameObject);
     }
 }

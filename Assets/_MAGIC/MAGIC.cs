@@ -3,7 +3,7 @@
 public class MAGIC : MonoBehaviour
 {
     private static MAGIC instance;
-    public static MAGIC Inst
+    public static MAGIC I
     {
         get {
             instance = instance ?? FindObjectOfType<MAGIC>();
@@ -11,8 +11,7 @@ public class MAGIC : MonoBehaviour
         }
     }
 
-    //public enum Elements { Earth, Air, Fire, Water, Light, Dark, Mind, Arcane };
-    public enum Element { Earth, Air, Fire, Water };
+    public enum Element { Earth, Air, Fire, Water }; // { Earth, Air, Fire, Water, Light, Dark, Mind, Arcane };
     public enum Reaction { Resistant, Vulnerable, Normal, Immune };
     public enum FailureCondition { NoCastSlot, NoTarget };
 
@@ -36,6 +35,6 @@ public class MAGIC : MonoBehaviour
                 Debug.Log("FAIL: UNKNOWN REASON");
                 break;
         }
-        PREFS.Inst.cameraShaker.ShakeCamera(2f, 0.018f);
+        PREFS.I.cameraShaker.ShakeCamera(2f, 0.018f);
     }
 }
